@@ -11,24 +11,26 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import { useState } from "react";
+import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate.jsx";
+
+import axios from "axios";
 
 import { TrashIcon } from "@radix-ui/react-icons";
 
-export default function DialogDeleteComponent(props) {
+const DialogDeleteComponent = (props) => {
 
     const [isDialogOpen, setDialogOpen] = useState(false);
+    const axiosPrivate = useAxiosPrivate();
+    const { auth } = useAuth();
     
     const handleDelete = (e) => {
         e.preventDefault();
     
-        fetch(`http://localhost:8080/books/${props.id}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
+        axiosPrivate
+            .delete(`http://localhost:8080/books/${props.id}`)
             .then((response) => {
-                if (response.ok) {
+                if (response.status === 204) {
                     console.log('Book successfully deleted');
                     setDialogOpen(false);
                     props.reloadTable();
@@ -62,3 +64,4 @@ export default function DialogDeleteComponent(props) {
         </AlertDialog>
     )
 }
+export default DialogDeleteComponent;

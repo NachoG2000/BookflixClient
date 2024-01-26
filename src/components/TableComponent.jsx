@@ -15,7 +15,7 @@ import { EyeOpenIcon } from "@radix-ui/react-icons"
 import DialogEditComponent from "./DialogEditComponent.jsx"
 import DialogDeleteComponent from "./DialogDeleteComponent.jsx"
 
-export default function TableComponent(props) {
+const TableComponent = (props) => {
 
     const bookElements = props.books.map((book) => {
         return (
@@ -50,3 +50,4 @@ export default function TableComponent(props) {
         </Table>
     )
 }
+export default TableComponent;

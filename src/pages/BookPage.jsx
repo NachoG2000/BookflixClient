@@ -4,14 +4,19 @@ import { Link } from 'react-router-dom';
 import DialogEditComponent from "../components/DialogEditComponent.jsx"
 import DialogDeleteComponent from "../components/DialogDeleteComponent.jsx"
 import { Button } from "@/components/ui/button";
+import useAxiosPrivate from "../hooks/useAxiosPrivate.jsx";
+import useAuth from '../hooks/useAuth.jsx';
 
 
-export default function BookPage() {
+const BookPage = () => {
+    const { auth } = useAuth();
     const { id } = useParams();
     const [book, setBook] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [reload, setReload] = useState(false);
+    const axiosPrivate = useAxiosPrivate();
+
 
     useEffect(() => {
         const fetchBook = async () => {
@@ -19,15 +24,12 @@ export default function BookPage() {
             setError(null);
 
             try {
-                const response = await fetch(`http://localhost:8080/books/${id}`);
+                axiosPrivate
+                    .get(`http://localhost:8080/books/${id}`)
+                    .then(response => {
+                        setBook(response.data);
+                    })
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                setBook(data);
-                
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -86,3 +88,5 @@ export default function BookPage() {
         </div>
     );
 }
+
+export default BookPage;

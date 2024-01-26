@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate.jsx";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -15,7 +17,8 @@ import {
 
 import { Pencil2Icon } from "@radix-ui/react-icons";
 
-export default function DialogComponent(props) {
+const DialogComponent = (props) => {
+    const axiosPrivate = useAxiosPrivate(); 
 
     const [formData, setFormData] = useState({
         name: "",
@@ -23,10 +26,9 @@ export default function DialogComponent(props) {
         description: ""
     });
     const [isDialogOpen, setDialogOpen] = useState(false);
-
+    
     const openDialog = () => {
         setDialogOpen(true);
-        
     }
 
     const handleInputChange = (e) => {
@@ -44,26 +46,21 @@ export default function DialogComponent(props) {
             console.log("Please fill in all fields");
             return; // Prevent form submission
         }
-        console.log(JSON.stringify(formData))
-        fetch(`http://localhost:8080/books/${props.id}`, {
-            method: "PUT",
-            body: JSON.stringify(formData),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
+
+        axiosPrivate
+            .put(`http://localhost:8080/books/${props.id}`, formData)
             .then((response) => {
-                if (response.ok) {
+                if (response.status === 204) {
                     console.log('Data successfully saved');
                     setFormData({
                         name: "",
                         author: "",
                         description: ""
-                    })
+                    });
                     setDialogOpen(false);
                     props.reloadTable();
                 } else {
-                    throw new Error('Server response wasn\'t OK');
+                    throw new Error('Server response was not OK');
                 }
             })
             .catch((error) => {
@@ -74,14 +71,14 @@ export default function DialogComponent(props) {
 
     useEffect(() => {
         // Fetch book data using the selected ID
-        fetch(`http://localhost:8080/books/${props.id}`)
-            .then((response) => response.json())
-            .then((data) => {
+        axiosPrivate
+            .get(`http://localhost:8080/books/${props.id}`)
+            .then((response) => {
                 // Update the form data with the fetched book data
                 setFormData({
-                    name: data.name,
-                    author: data.author,
-                    description: data.description
+                    name: response.data.name,
+                    author: response.data.author,
+                    description: response.data.description
                 });
             })
             .catch((error) => {
@@ -130,7 +127,7 @@ export default function DialogComponent(props) {
                                 value={formData.description}
                                 className="col-span-3"
                                 onChange={handleInputChange}
-                                autoComplete="off"  
+                                autoComplete="off"
                             />
                         </div>
                     </div>
@@ -144,3 +141,4 @@ export default function DialogComponent(props) {
         </Dialog>
     )
 }
+export default DialogComponent;

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import useAxiosPrivate from "../hooks/useAxiosPrivate.jsx";
+
 
 import {
     Dialog,
@@ -13,13 +15,14 @@ import {
     DialogFooter
 } from "@/components/ui/dialog";
 
-export default function DialogComponent(props) {
+const DialogComponent = (props) => {
     const [formData, setFormData] = useState({
         name: "",
         author: "",
         description: ""
     });
     const [isDialogOpen, setDialogOpen] = useState(false);
+    const { axiosPrivate } = useAxiosPrivate();
 
     const handleInputChange = (e) => {
         setFormData((prevFormData) => ({
@@ -37,26 +40,17 @@ export default function DialogComponent(props) {
             return; // Prevent form submission
         }
 
-        fetch("http://localhost:8080/books", {
-            method: "POST",
-            body: JSON.stringify(formData),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-            .then((response) => {
-                if (response.ok) {
-                    console.log('Data successfully saved');
-                    setFormData({
-                        name: "",
-                        author: "",
-                        description: ""
-                    })
-                    setDialogOpen(false);
-                    props.reloadTable();
-                } else {
-                    throw new Error('Server response wasn\'t OK');
-                }
+        axiosPrivate
+            .post("http://localhost:8080/books", formData)
+            .then(() => {
+                console.log('Data successfully saved');
+                setFormData({
+                    name: "",
+                    author: "",
+                    description: ""
+                });
+                setDialogOpen(false);
+                props.reloadTable();
             })
             .catch((error) => {
                 // Handle any errors
@@ -119,3 +113,4 @@ export default function DialogComponent(props) {
         </Dialog>
     );
 }
+export default DialogComponent;
