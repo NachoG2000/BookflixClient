@@ -68,8 +68,12 @@ const BookPage = () => {
                         <p className="text-2xl m-2">{book.author}</p>
                         <p className="text-xl mx-2 my-4 text-gray-500">{book.description}</p>
                         <div className='flex mx-2 gap-2'>
-                            <DialogEditComponent id={book.id} reloadTable={reloadTable} />
-                            <DialogDeleteComponent id={book.id} reloadTable={reloadTable} />
+                        {auth.role === 'ADMIN' && 
+                            (<>
+                                <DialogEditComponent id={book.id} reloadTable={reloadTable} />
+                                <DialogDeleteComponent id={book.id} reloadTable={reloadTable} />
+                            </>)
+                        }
                         </div>
                     </div>
                     <div className="flex flex-1 items-center justify-center w-full h-full bg-gray-50">

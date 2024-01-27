@@ -12,8 +12,8 @@ const useRefreshToken = () => {
         });
     
         setAuth(prev => {
-            console.log("Prev: " + JSON.stringify(prev.jwtToken));
-            console.log("Response: " + response.data.jwtToken);
+            // console.log("Prev: " + JSON.stringify(prev.jwtToken));
+            // console.log("Response: " + response.data.jwtToken);
             return {
                 ...prev,
                 jwtToken: response.data.jwtToken

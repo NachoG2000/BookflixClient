@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
+import useAuth from '../hooks/useAuth.jsx';
 
 import {
     Table,
@@ -16,6 +17,7 @@ import DialogEditComponent from "./DialogEditComponent.jsx"
 import DialogDeleteComponent from "./DialogDeleteComponent.jsx"
 
 const TableComponent = (props) => {
+    const { auth } = useAuth();
 
     const bookElements = props.books.map((book) => {
         return (
@@ -27,8 +29,12 @@ const TableComponent = (props) => {
                     <Link to={`/books/${book.id}`}>
                         <EyeOpenIcon className="h-4 w-4" />
                     </Link>
-                    <DialogEditComponent id={book.id} reloadTable={props.reloadTable} />
-                    <DialogDeleteComponent id={book.id} reloadTable={props.reloadTable} />
+                    {auth.role === 'ADMIN' && 
+                        (<>
+                            <DialogEditComponent id={book.id} reloadTable={props.reloadTable} />
+                            <DialogDeleteComponent id={book.id} reloadTable={props.reloadTable} />
+                        </>)
+                    }
                 </TableCell>
             </TableRow>
         )

@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import useAxiosPrivate from "../hooks/useAxiosPrivate.jsx";
 
-
 import {
     Dialog,
     DialogContent,
@@ -22,7 +21,7 @@ const DialogComponent = (props) => {
         description: ""
     });
     const [isDialogOpen, setDialogOpen] = useState(false);
-    const { axiosPrivate } = useAxiosPrivate();
+    const axiosPrivate = useAxiosPrivate();
 
     const handleInputChange = (e) => {
         setFormData((prevFormData) => ({

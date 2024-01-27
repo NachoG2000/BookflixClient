@@ -28,14 +28,14 @@ const LibraryPage = () => {
       })
       .catch(error => console.error('Error fetching books:', error));
       
-  }, [reload, auth.jwtToken]);
+  }, [reload]);
 
   return (
     <>
       <header className="p-6 flex justify-between items-center hover:bg-gray-50">
         <img src="./bookflix.svg" alt="Bookflix" className="h-12" />
         <div className="flex gap-4">
-          <DialogAddComponent asChild reloadTable={reloadTable} />
+          {auth.role === 'ADMIN' && <DialogAddComponent asChild reloadTable={reloadTable} />}
           <AvatarDropdown />
         </div>
       </header>
